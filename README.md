@@ -22,7 +22,7 @@
 
 **UsageBar** is a lightweight Windows system tray application that displays your AI coding tool usage statistics at a glance. Stay on top of your usage limits across multiple AI coding assistants without switching between browser tabs or apps.
 
-> 💡 **Inspired by [CodexBar](https://github.com/mzbac/CodexBar)** – the macOS menu bar app for Codex CLI usage stats. UsageBar brings the same convenience to **Windows** users with expanded provider support.
+
 
 ---
 
@@ -59,7 +59,7 @@
 ## 📥 Installation
 
 ### Option 1: Download Installer (Recommended)
-1. Go to [Releases](https://github.com/steipete/UsageBar/releases)
+1. Go to [Releases](https://github.com/ai-dev-2024/UsageBar/releases)
 2. Download `UsageBar-Setup.exe`
 3. Run the installer
 4. Launch UsageBar from Start Menu or Desktop
