@@ -83,6 +83,8 @@ npm run package
 
 ## 🔌 Supported Providers
 
+> **Status Summary**: ✅ **3 Tested & Working** | ⚠️ **1 Limited** | ❓ **3 Untested**
+
 | Provider | Auth Method | Status | Notes |
 |----------|-------------|--------|-------|
 | **Cursor** | Browser login | ✅ Tested | Click "Sign in to Cursor" → auto-captures session |
@@ -93,7 +95,7 @@ npm run package
 | **Factory (Droid)** | App login | ❓ Untested | Requires Factory app |
 | **z.ai** | API Token | ❓ Untested | Set `ZAI_API_TOKEN` env var |
 
-> **Note**: Providers marked ❓ Untested should work based on CodexBar's implementation, but have not been verified. Please report any issues!
+> **Note**: Providers marked ❓ Untested should work based on CodexBar's implementation, but have not been verified. Please [report any issues](https://github.com/ai-dev-2024/UsageBar/issues)!
 
 ---
 
