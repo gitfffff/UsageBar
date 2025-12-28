@@ -85,17 +85,17 @@ npm run package
 
 > **Status Summary**: ✅ **3 Tested & Working** | ⚠️ **1 Limited** | ❓ **3 Untested**
 
-| Provider | Auth Method | Status | Notes |
-|----------|-------------|--------|-------|
-| **Cursor** | Browser login | ✅ Tested | Click "Sign in to Cursor" → auto-captures session |
-| **GitHub Copilot** | GitHub OAuth | ✅ Tested | Device flow authentication |
-| **Antigravity (Windsurf)** | Auto-detect | ✅ Tested | Detects running process |
-| **Claude** | Browser/CLI | ⚠️ Limited | Free tier has no usage API; paid plans work |
-| **Codex (OpenAI)** | CLI | ❓ Untested | `codex login` required |
-| **Factory (Droid)** | App login | ❓ Untested | Requires Factory app |
-| **z.ai** | API Token | ❓ Untested | Set `ZAI_API_TOKEN` env var |
+| Provider | Auth Method | Status | Docs |
+|----------|-------------|--------|------|
+| **Cursor** | Browser login | ✅ Tested | [docs/cursor.md](docs/cursor.md) |
+| **GitHub Copilot** | GitHub OAuth | ✅ Tested | [docs/copilot.md](docs/copilot.md) |
+| **Antigravity (Windsurf)** | Auto-detect | ✅ Tested | [docs/antigravity.md](docs/antigravity.md) |
+| **Claude** | Browser/CLI | ⚠️ Limited | [docs/claude.md](docs/claude.md) |
+| **Codex (OpenAI)** | CLI | ❓ Untested | [docs/codex.md](docs/codex.md) |
+| **Factory (Droid)** | App login | ❓ Untested | [docs/factory.md](docs/factory.md) |
+| **z.ai** | API Token | ❓ Untested | [docs/zai.md](docs/zai.md) |
 
-> **Note**: Providers marked ❓ Untested should work based on CodexBar's implementation, but have not been verified. Please [report any issues](https://github.com/ai-dev-2024/UsageBar/issues)!
+> 📖 See [docs/provider.md](docs/provider.md) for the provider authoring guide.
 
 ---
 
