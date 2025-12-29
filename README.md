@@ -3,7 +3,20 @@
 </p>
 
 <p align="center">
-  <strong>Windows system tray app for AI coding tool usage stats</strong>
+  <strong>🖥️ Windows system tray app for AI coding tool usage stats</strong>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Platform-Windows-0078D6?style=for-the-badge&logo=windows" alt="Windows">
+  <img src="https://img.shields.io/badge/Built%20with-Antigravity-667eea?style=for-the-badge" alt="Built with Antigravity">
+  <img src="https://img.shields.io/github/v/release/ai-dev-2024/UsageBar?style=for-the-badge&color=14b8a6" alt="Release">
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License">
+</p>
+
+<p align="center">
+  <a href="https://github.com/ai-dev-2024/UsageBar/releases/latest">
+    <img src="https://img.shields.io/badge/⬇️_Download_Latest-v1.4.1-22c55e?style=for-the-badge&logoColor=white" alt="Download">
+  </a>
 </p>
 
 <p align="center">
@@ -18,9 +31,9 @@
 
 ## 🎯 What is UsageBar?
 
-**UsageBar** is a lightweight Windows system tray application that displays your AI coding tool usage statistics at a glance. Stay on top of your usage limits across multiple AI coding assistants without switching between browser tabs or apps.
+**UsageBar** is a lightweight **Windows-only** system tray application that displays your AI coding tool usage statistics at a glance. Stay on top of your usage limits across multiple AI coding assistants without switching between browser tabs or apps.
 
-
+> ⚠️ **Windows Only** – This app is designed exclusively for Windows 10/11. For macOS, check out [CodexBar](https://github.com/steipete/CodexBar).
 
 ---
 
@@ -118,6 +131,7 @@ npm run package
 ### General Settings
 - **Refresh Interval**: 1, 2, 5, 10, 15, or 30 minutes
 - **Reset Session Daily**: Auto-reset session meter every 24 hours
+- **Global Hotkey**: Customizable keyboard shortcut (default: Ctrl+Shift+U)
 
 ### Provider Settings
 Each provider can be individually enabled/disabled. Some require additional configuration:
