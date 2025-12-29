@@ -2,6 +2,16 @@
 
 All notable changes to UsageBar will be documented in this file.
 
+## [1.4.1] - 2025-12-29
+
+### 🐛 Bug Fixes
+- **Toggle Switch Visibility** – Fixed enabled toggle visibility with bright teal color (#14b8a6)
+
+### 🎨 UI Improvements
+- **Ko-fi Button in Sidebar** – Moved support button to sidebar for better accessibility
+
+---
+
 ## [1.4.0] - 2025-12-29
 
 ### ✨ New Features

@@ -62,10 +62,10 @@
 
 ### Windows (Portable) - Recommended
 
-> **Latest Version**: [v1.4.0](https://github.com/ai-dev-2024/UsageBar/releases/tag/v1.4.0) – Gradient theme, transparency slider, click-to-update
+> **Latest Version**: [v1.4.1](https://github.com/ai-dev-2024/UsageBar/releases/tag/v1.4.1) – Toggle fix, Ko-fi sidebar
 
 1. Go to **[Releases](https://github.com/ai-dev-2024/UsageBar/releases)**.
-2. Download `UsageBar-v1.4.0-Portable.zip`.
+2. Download `UsageBar-v1.4.1-Portable.zip`.
 3. Extract the ZIP file to a folder of your choice (e.g., `Documents\UsageBar`).
 4. Open the folder and double-click **`UsageBar.exe`** to run.
 5. *(Optional)* Right-click `UsageBar.exe` → "Send to" → "Desktop (create shortcut)" for easy access.
