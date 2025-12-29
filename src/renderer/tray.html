@@ -92,6 +92,46 @@
             height: 20px;
         }
 
+        /* Mini progress bar under provider icons */
+        .provider-tab .mini-bar {
+            position: absolute;
+            bottom: 2px;
+            left: 4px;
+            right: 4px;
+            height: 3px;
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .provider-tab .mini-bar-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.3s ease, background-color 0.3s ease;
+        }
+
+        .mini-bar-fill.good {
+            background: #22c55e;
+        }
+
+        /* Green: >50% remaining */
+        .mini-bar-fill.warning {
+            background: #f59e0b;
+        }
+
+        /* Yellow: 20-50% remaining */
+        .mini-bar-fill.critical {
+            background: #ef4444;
+        }
+
+        /* Red: <20% remaining */
+        .mini-bar-fill.unknown {
+            background: #71717a;
+        }
+
+        /* Gray: no data */
+
+
         /* Icon Background Colors & Gradients */
         .bg-antigravity {
             background: transparent;
@@ -456,10 +496,31 @@
 
             activeIds.forEach(id => {
                 const meta = providersMeta[id] || { name: id, svg: svgs.codex, bg: 'bg-codex' };
+                const providerData = usage[id];
                 const tab = document.createElement('div');
                 tab.className = `provider-tab ${meta.bg} ${id === activeProviderId ? 'active' : ''}`;
-                tab.innerHTML = meta.svg;
-                tab.title = meta.name;
+
+                // Calculate usage for mini bar
+                let usedPercent = 0;
+                let remaining = 100;
+                let barClass = 'unknown';
+
+                if (providerData?.primary?.usedPercent !== undefined) {
+                    usedPercent = providerData.primary.usedPercent;
+                    remaining = Math.max(0, 100 - usedPercent);
+                    if (remaining > 50) barClass = 'good';
+                    else if (remaining > 20) barClass = 'warning';
+                    else barClass = 'critical';
+                }
+
+                // Build tab HTML with mini bar
+                tab.innerHTML = `
+                    ${meta.svg}
+                    <div class="mini-bar">
+                        <div class="mini-bar-fill ${barClass}" style="width: ${remaining}%"></div>
+                    </div>
+                `;
+                tab.title = `${meta.name}${remaining < 100 ? ` (${remaining.toFixed(0)}% left)` : ''}`;
                 tab.onclick = () => {
                     activeProviderId = id;
                     if (ipc.setSelectedProvider) ipc.setSelectedProvider(id);

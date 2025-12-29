@@ -73,6 +73,89 @@ export function createTrayIcon(usedPercent: number): NativeImage {
 }
 
 /**
+ * Create a two-bar tray icon like CodexBar (session + weekly)
+ * @param sessionPercent - Session/primary usage percentage (0-100)
+ * @param weeklyPercent - Weekly/secondary usage percentage (0-100)
+ */
+export function createDualBarTrayIcon(sessionPercent: number, weeklyPercent: number): NativeImage {
+    const canvas = Buffer.alloc(ICON_SIZE * ICON_SIZE * 4);
+
+    // Calculate remaining for both bars
+    const sessionRemaining = Math.max(0, Math.min(100, 100 - sessionPercent));
+    const weeklyRemaining = Math.max(0, Math.min(100, 100 - weeklyPercent));
+
+    // Fill widths (horizontal bars)
+    const sessionFillWidth = Math.floor((sessionRemaining / 100) * (ICON_SIZE - 4));
+    const weeklyFillWidth = Math.floor((weeklyRemaining / 100) * (ICON_SIZE - 4));
+
+    // Colors based on remaining percentage
+    const getColor = (remaining: number) => {
+        if (remaining > 50) return { r: 20, g: 184, b: 166 };  // Teal
+        if (remaining > 20) return { r: 255, g: 193, b: 7 };   // Yellow
+        return { r: 244, g: 67, b: 54 };                        // Red
+    };
+
+    const sessionColor = getColor(sessionRemaining);
+    const weeklyColor = getColor(weeklyRemaining);
+
+    // Background and border
+    const bgR = 40, bgG = 40, bgB = 40;
+    const borderR = 80, borderG = 80, borderB = 80;
+
+    // Top bar: y = 2-6 (session, thicker)
+    // Bottom bar: y = 9-12 (weekly, thinner)
+    for (let y = 0; y < ICON_SIZE; y++) {
+        for (let x = 0; x < ICON_SIZE; x++) {
+            const i = (y * ICON_SIZE + x) * 4;
+
+            // Border
+            const isBorder = x === 0 || x === ICON_SIZE - 1 || y === 0 || y === ICON_SIZE - 1;
+
+            // Session bar area (y: 2-6, thicker 5px)
+            const isSessionArea = y >= 2 && y <= 6 && x >= 2 && x < ICON_SIZE - 2;
+            const isSessionFill = isSessionArea && x < 2 + sessionFillWidth;
+
+            // Weekly bar area (y: 9-12, thinner 4px)
+            const isWeeklyArea = y >= 9 && y <= 12 && x >= 2 && x < ICON_SIZE - 2;
+            const isWeeklyFill = isWeeklyArea && x < 2 + weeklyFillWidth;
+
+            if (isBorder) {
+                canvas[i] = borderR;
+                canvas[i + 1] = borderG;
+                canvas[i + 2] = borderB;
+                canvas[i + 3] = 255;
+            } else if (isSessionFill) {
+                canvas[i] = sessionColor.r;
+                canvas[i + 1] = sessionColor.g;
+                canvas[i + 2] = sessionColor.b;
+                canvas[i + 3] = 255;
+            } else if (isWeeklyFill) {
+                canvas[i] = weeklyColor.r;
+                canvas[i + 1] = weeklyColor.g;
+                canvas[i + 2] = weeklyColor.b;
+                canvas[i + 3] = 255;
+            } else if (isSessionArea || isWeeklyArea) {
+                // Empty bar background (darker)
+                canvas[i] = 25;
+                canvas[i + 1] = 25;
+                canvas[i + 2] = 25;
+                canvas[i + 3] = 255;
+            } else {
+                canvas[i] = bgR;
+                canvas[i + 1] = bgG;
+                canvas[i + 2] = bgB;
+                canvas[i + 3] = 255;
+            }
+        }
+    }
+
+    return nativeImage.createFromBuffer(canvas, {
+        width: ICON_SIZE,
+        height: ICON_SIZE,
+    });
+}
+
+/**
  * Create an error state icon (dimmed with X)
  */
 export function createErrorIcon(): NativeImage {

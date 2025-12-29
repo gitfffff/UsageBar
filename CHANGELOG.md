@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2024-12-29
+
+### Added
+- **Mini progress bars**: Tiny color-coded usage meters under each provider icon
+- **Two-bar tray icon**: System tray shows session (top) + weekly (bottom) like CodexBar
+
+### Changed
+- Provider tabs now show real-time usage at a glance
+- Tooltip shows both session and weekly remaining percentages
+- Color coding: green (>50%), yellow (20-50%), red (<20%)
+
+---
+
 ## [1.0.3] - 2024-12-29
 
 ### Added

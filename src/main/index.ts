@@ -208,41 +208,46 @@ function updateTrayIcon(): void {
     const enabledProviders = settings.getEnabledProviders();
 
     // Use selected provider's usage if available, otherwise average
-    let usedPercent = 0;
+    let sessionPercent = 0;
+    let weeklyPercent = 0;
     let providerName = 'UsageBar';
 
     if (selectedProviderId && usage[selectedProviderId]?.primary) {
-        usedPercent = usage[selectedProviderId].primary!.usedPercent;
+        sessionPercent = usage[selectedProviderId].primary!.usedPercent;
+        weeklyPercent = usage[selectedProviderId].secondary?.usedPercent || sessionPercent;
         providerName = usage[selectedProviderId].displayName || selectedProviderId;
     } else {
         // Fall back to average of all enabled providers
-        let totalUsed = 0;
-        let count = 0;
+        let totalSession = 0, totalWeekly = 0, count = 0;
         for (const providerId of enabledProviders) {
             const providerUsage = usage[providerId];
             if (providerUsage?.primary) {
-                totalUsed += providerUsage.primary.usedPercent;
+                totalSession += providerUsage.primary.usedPercent;
+                totalWeekly += providerUsage.secondary?.usedPercent || providerUsage.primary.usedPercent;
                 count++;
             }
         }
-        usedPercent = count > 0 ? totalUsed / count : 0;
+        sessionPercent = count > 0 ? totalSession / count : 0;
+        weeklyPercent = count > 0 ? totalWeekly / count : 0;
     }
 
-    // Dynamic meter for taskbar
-    const icon = createTrayIcon(usedPercent);
+    // Dynamic dual-bar meter for taskbar (session top, weekly bottom)
+    const { createDualBarTrayIcon } = require('./tray');
+    const icon = createDualBarTrayIcon(sessionPercent, weeklyPercent);
     tray.setImage(icon);
 
     // Update Windows Taskbar Overlay if Settings Window is open
     if (settingsWindow && !settingsWindow.isDestroyed()) {
-        const description = `${(100 - usedPercent).toFixed(0)}% available`;
+        const description = `${(100 - sessionPercent).toFixed(0)}% session, ${(100 - weeklyPercent).toFixed(0)}% weekly`;
         settingsWindow.setOverlayIcon(icon, description);
     }
 
     // Update tooltip with selected provider info
-    const remaining = Math.max(0, 100 - usedPercent);
+    const sessionRemaining = Math.max(0, 100 - sessionPercent);
+    const weeklyRemaining = Math.max(0, 100 - weeklyPercent);
     const tooltip = selectedProviderId
-        ? `${providerName}: ${remaining.toFixed(0)}% remaining`
-        : `UsageBar: ${remaining.toFixed(0)}% remaining`;
+        ? `${providerName}: ${sessionRemaining.toFixed(0)}% session, ${weeklyRemaining.toFixed(0)}% weekly`
+        : `UsageBar: ${sessionRemaining.toFixed(0)}% session, ${weeklyRemaining.toFixed(0)}% weekly`;
     tray.setToolTip(tooltip);
 }
 
