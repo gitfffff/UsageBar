@@ -39,6 +39,10 @@ app.on('ready', async () => {
     // Register IPC handlers
     setupIPC();
 
+    // Setup auto-updater (checks GitHub releases)
+    const { setupAutoUpdater } = require('./updater');
+    setupAutoUpdater();
+
     // Register global hotkey (Ctrl+Shift+U to toggle tray)
     globalShortcut.register('CommandOrControl+Shift+U', () => {
         toggleTrayWindow();
@@ -50,7 +54,7 @@ app.on('ready', async () => {
         path: app.getPath('exe'),
     });
 
-    console.log('UsageBar started successfully (Hotkey: Ctrl+Shift+U)');
+    console.log('UsageBar started (Hotkey: Ctrl+Shift+U, Auto-update: enabled)');
 });
 
 let trayWindow: BrowserWindow | null = null;
@@ -210,6 +214,19 @@ async function refreshUsage(): Promise<void> {
         await providerManager.refreshAll();
         updateTrayIcon();
         const usage = providerManager.getLatestUsage();
+
+        // Record usage history for trend tracking
+        const { UsageHistory } = require('./history');
+        const history = new UsageHistory();
+        for (const [providerId, data] of Object.entries(usage)) {
+            if (data?.primary?.usedPercent !== undefined) {
+                history.record(
+                    providerId,
+                    data.primary.usedPercent,
+                    data.secondary?.usedPercent
+                );
+            }
+        }
 
         // Push update to tray window if it exists
         if (trayWindow && !trayWindow.isDestroyed()) {

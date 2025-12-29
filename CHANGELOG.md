@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2024-12-29
+
+### Added
+- **Auto-update**: Checks GitHub releases on startup, notifies and auto-installs
+- **Usage history**: Tracks 7 days of usage data for trend analysis
+- **Playwright tests**: Screenshot capture for visual regression testing
+- **Test scripts**: `npm test` and `npm run test:screenshot`
+
+### Changed
+- Improved startup with background update checking
+- Added history recording to usage refresh cycle
+
+---
+
 ## [1.3.0] - 2024-12-29
 
 ### Added
