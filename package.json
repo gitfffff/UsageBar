@@ -40,7 +40,8 @@
       "icon": "assets/icon.ico",
       "target": [
         "dir",
-        "zip"
+        "zip",
+        "nsis"
       ]
     },
     "nsis": {

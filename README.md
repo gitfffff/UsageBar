@@ -78,15 +78,16 @@
 
 ## 📥 Installation
 
-### Windows (Portable) - Recommended
+### Windows (Installer + Portable)
 
 > **Latest Version**: [v1.5.0](https://github.com/ai-dev-2024/UsageBar/releases/tag/v1.5.0) – Cloud CI/CD, auto-release, test coverage
 
 1. Go to **[Releases](https://github.com/ai-dev-2024/UsageBar/releases)**.
-2. Download `UsageBar-v1.4.1-Portable.zip`.
-3. Extract the ZIP file to a folder of your choice (e.g., `Documents\UsageBar`).
-4. Open the folder and double-click **`UsageBar.exe`** to run.
-5. *(Optional)* Right-click `UsageBar.exe` → "Send to" → "Desktop (create shortcut)" for easy access.
+2. Download one of these assets:
+   - **Installer**: `UsageBar Setup <version>.exe` (recommended)
+   - **Portable**: `UsageBar-<version>-win.zip`
+3. If you choose installer, run the `.exe` and follow setup wizard.
+4. If you choose portable ZIP, extract it and run `UsageBar.exe` from the extracted folder.
 
 ### Auto-Updates
 
@@ -207,7 +208,7 @@ git push origin v1.5.0
 # GitHub Actions will:
 # 1. Build and test
 # 2. Create release with auto-generated notes
-# 3. Upload Windows installer
+# 3. Upload Windows installer (.exe) + portable zip
 # 4. Auto-close resolved issues
 ```
 
