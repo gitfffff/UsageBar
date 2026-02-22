@@ -37,7 +37,7 @@
     "appId": "com.usagebar.app",
     "productName": "UsageBar",
     "win": {
-      "icon": "assets/icon.ico",
+      "icon": "assets/icon.png",
       "target": [
         "dir",
         "zip",
