@@ -39,17 +39,21 @@ export class CodexProvider implements Provider {
 
     async fetch(): Promise<ProviderUsage> {
         try {
-            // Detect Codex CLI version
             const version = await this.detectVersion();
 
-            // Try RPC-based fetch first
+            // Newer Codex CLI versions expose a JSON status endpoint.
+            try {
+                return await this.fetchWithStatusJson(version);
+            } catch {
+                // Ignore and continue through legacy fallbacks.
+            }
+
             try {
                 return await this.fetchWithRPC(version);
             } catch {
-                // Fall back to PTY-based parsing
                 return await this.fetchWithPTY(version);
             }
-        } catch (error) {
+        } catch {
             return {
                 providerId: this.id,
                 displayName: this.displayName,
@@ -73,6 +77,7 @@ export class CodexProvider implements Provider {
         try {
             const { stdout } = await execAsync('codex --version', {
                 timeout: this.timeout,
+                maxBuffer: 1024 * 1024,
             });
             const match = stdout.match(/(\d+\.\d+\.\d+)/);
             return match ? match[1] : 'unknown';
@@ -81,28 +86,37 @@ export class CodexProvider implements Provider {
         }
     }
 
+    private async fetchWithStatusJson(version: string): Promise<ProviderUsage> {
+        const { stdout } = await execAsync('codex status --json', {
+            timeout: this.timeout,
+            maxBuffer: 4 * 1024 * 1024,
+        });
+
+        const parsed = JSON.parse(stdout) as CodexRPCResponse;
+        return this.parseRPCResponse(parsed, version);
+    }
+
     private async fetchWithRPC(version: string): Promise<ProviderUsage> {
         return new Promise((resolve, reject) => {
-            const process = spawn('codex', ['-s', 'read-only', '-a', 'untrusted', 'app-server'], {
+            const childProcess = spawn('codex', ['-s', 'read-only', '-a', 'untrusted', 'app-server'], {
                 stdio: ['pipe', 'pipe', 'pipe'],
+                shell: process.platform === 'win32',
             });
 
             let stdout = '';
-            let stderr = '';
             let resolved = false;
 
             const timeout = setTimeout(() => {
                 if (!resolved) {
                     resolved = true;
-                    process.kill();
+                    childProcess.kill();
                     reject(new Error('Codex RPC timed out'));
                 }
             }, this.timeout);
 
-            process.stdout.on('data', (data) => {
+            childProcess.stdout.on('data', (data) => {
                 stdout += data.toString();
 
-                // Try to parse JSON-RPC response
                 try {
                     const lines = stdout.split('\n');
                     for (const line of lines) {
@@ -111,7 +125,7 @@ export class CodexProvider implements Provider {
                             if (!resolved) {
                                 resolved = true;
                                 clearTimeout(timeout);
-                                process.kill();
+                                childProcess.kill();
                                 resolve(this.parseRPCResponse(response, version));
                             }
                         }
@@ -121,11 +135,7 @@ export class CodexProvider implements Provider {
                 }
             });
 
-            process.stderr.on('data', (data) => {
-                stderr += data.toString();
-            });
-
-            process.on('close', () => {
+            childProcess.on('close', () => {
                 if (!resolved) {
                     resolved = true;
                     clearTimeout(timeout);
@@ -133,7 +143,7 @@ export class CodexProvider implements Provider {
                 }
             });
 
-            process.on('error', (err) => {
+            childProcess.on('error', (err) => {
                 if (!resolved) {
                     resolved = true;
                     clearTimeout(timeout);
@@ -141,14 +151,13 @@ export class CodexProvider implements Provider {
                 }
             });
 
-            // Send RPC request
             const request = JSON.stringify({
                 jsonrpc: '2.0',
                 id: 1,
                 method: 'getUsage',
                 params: {},
             });
-            process.stdin.write(request + '\n');
+            childProcess.stdin.write(request + '\n');
         });
     }
 
@@ -180,7 +189,6 @@ export class CodexProvider implements Provider {
             accountPlan: response.account?.planType,
             version,
             updatedAt: new Date().toISOString(),
-            // macOS parity fields
             credits: response.credits ? {
                 balance: response.credits.balance || '0',
                 unlimited: response.credits.unlimited,
@@ -192,15 +200,14 @@ export class CodexProvider implements Provider {
 
     private async fetchWithPTY(version: string): Promise<ProviderUsage> {
         try {
-            // Try to run codex status command
             const { stdout } = await execAsync('codex status', {
                 timeout: this.timeout,
+                maxBuffer: 1024 * 1024,
             });
 
-            // Parse text output
-            const sessionMatch = stdout.match(/session:\s*(\d+)%/i);
-            const weeklyMatch = stdout.match(/weekly:\s*(\d+)%/i);
-            const emailMatch = stdout.match(/email:\s*(\S+)/i);
+            const sessionMatch = stdout.match(/session(?:\s+usage)?\s*:\s*(\d+)%/i);
+            const weeklyMatch = stdout.match(/weekly(?:\s+usage)?\s*:\s*(\d+)%/i);
+            const emailMatch = stdout.match(/email\s*:\s*(\S+)/i);
 
             const primary: RateWindow | undefined = sessionMatch ? {
                 usedPercent: parseInt(sessionMatch[1], 10),
